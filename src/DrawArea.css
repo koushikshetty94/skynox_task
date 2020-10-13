@@ -1,0 +1,43 @@
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+}
+.colors{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.colors__selection{
+  width: 40px;
+  height:40px;
+  border-radius:50%;
+  margin-left: 5px;
+  margin-bottom: 10px ;
+  background: none;
+  outline: none;
+
+}
+.drawArea {
+  width: 400px;
+  height: 400px;
+  border: 1px solid black;
+  /* float: left; */
+  cursor: crosshair;
+  margin: 0 auto;
+}
+
+.path {
+  fill: none;
+  stroke-width: 1px;
+  stroke: black;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+/*   fill:green */
+/*   color:red; */
+  /* stroke: red; */
+}
+
+.drawing {
+  width: 100%;
+  height: 100%;
+}
