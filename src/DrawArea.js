@@ -1,6 +1,13 @@
 import React from "react";
 import Immutable from "immutable";
+import jsPDF from "jspdf";
+import "jspdf/dist/polyfills.es.js";
+
+import html2canvas from "html2canvas";
+
 import "./DrawArea.css";
+
+var doc = new jsPDF();
 
 class DrawArea extends React.Component {
   constructor() {
@@ -8,7 +15,7 @@ class DrawArea extends React.Component {
 
     this.state = {
       lines: new Immutable.List(),
-      isDrawing: false
+      isDrawing: false,
     };
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -31,9 +38,9 @@ class DrawArea extends React.Component {
 
     const point = this.relativeCoordinatesForEvent(mouseEvent);
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       lines: prevState.lines.push(new Immutable.List([point])),
-      isDrawing: true
+      isDrawing: true,
     }));
   }
 
@@ -43,9 +50,11 @@ class DrawArea extends React.Component {
     }
 
     const point = this.relativeCoordinatesForEvent(mouseEvent);
-    
-    this.setState(prevState =>  ({
-      lines: prevState.lines.updateIn([prevState.lines.size - 1], line => line.push(point))
+
+    this.setState((prevState) => ({
+      lines: prevState.lines.updateIn([prevState.lines.size - 1], (line) =>
+        line.push(point)
+      ),
     }));
   }
 
@@ -61,20 +70,32 @@ class DrawArea extends React.Component {
     });
   }
 
-  doc = React.createRef()
+  // doc = React.createRef()
+
+  changeColor = (c) => {
+    this.setState({ color: c });
+  };
+
+  saveDiv = () => {
+    const input = document.getElementById("drawit");
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, "JPEG", 50, 50);
+      // pdf.output('dataurlnewwindow');
+      pdf.save("download.pdf");
+    });
+  };
 
   render() {
-
+    console.log(doc, "iamdoc");
     return (
       <>
-        <div className="colors" >
+        <div className="colors">
           <button
             className="colors__selection"
             style={{ border: "2px solid red" }}
             onClick={() => {
-              // this.doc.print()
-              console.log(this.doc)
-              
               this.changeColor("red");
               // color = "red";
             }}
@@ -100,7 +121,6 @@ class DrawArea extends React.Component {
             style={{ border: "2px solid violet" }}
             onClick={() => {
               this.changeColor("violet");
-              // color = "violet";
             }}
           ></button>
         </div>
@@ -108,10 +128,13 @@ class DrawArea extends React.Component {
           className="drawArea"
           ref="drawArea"
           onMouseDown={this.handleMouseDown}
-          onMouseMove={this.handleMouseMove} 
-          ref={this.doc}
+          onMouseMove={this.handleMouseMove}
+          id="drawit"
         >
           <Drawing lines={this.state.lines} color={this.state.color} />
+        </div>
+        <div style={{margin:"20px auto", display:"flex", justifyContent:"center"}} > 
+          <button onClick={()=>this.saveDiv("drawit", "draw")}>Download</button>
         </div>
       </>
     );
