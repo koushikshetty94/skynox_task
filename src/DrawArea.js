@@ -129,6 +129,8 @@ class DrawArea extends React.Component {
           ref="drawArea"
           onMouseDown={this.handleMouseDown}
           onMouseMove={this.handleMouseMove}
+          onTouchStart={this.handleMouseDown}
+          onTouchMove={this.handleMouseMove}
           id="drawit"
         >
           <Drawing lines={this.state.lines} color={this.state.color} />
